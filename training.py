@@ -1,4 +1,7 @@
-from langchain.document_loaders import OnlinePDFLoader
+import argparse
+import sys
+import os
+from langchain.document_loaders import JSONLoader
 from langchain.vectorstores import Chroma
 from langchain.embeddings import GPT4AllEmbeddings
 from langchain import PromptTemplate
@@ -6,9 +9,14 @@ from langchain.llms import Ollama
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import RetrievalQA
-import sys
-import os
-from langchain.document_loaders import JSONLoader
+
+# Initialize argparse and define command-line arguments
+parser = argparse.ArgumentParser(description='Training Script')
+parser.add_argument('--json_path', type=str, help='Path to the JSON file')
+args = parser.parse_args()
+
+# Use the JSON file path as needed
+json_path = args.json_path
 
 class SuppressStdout:
     def __enter__(self):
@@ -22,7 +30,7 @@ class SuppressStdout:
         sys.stdout = self._original_stdout
         sys.stderr = self._original_stderr
 
-loader = loader = JSONLoader(file_path = '/Users/ankit-privado/Desktop/privado/hackathon/java_demo/.privado/privado.json', jq_schema = '.',text_content=False)
+loader = JSONLoader(file_path=json_path, jq_schema='.', text_content=False)
 data = loader.load()
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -52,7 +60,6 @@ while True:
     )
 
     llm = Ollama(base_url='http://localhost:11434', model="llama2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]))
-    # llm = Ollama(model="llama2:13b", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]))
     qa_chain = RetrievalQA.from_chain_type(
         llm,
         retriever=vectorstore.as_retriever(),
