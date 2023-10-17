@@ -1,4 +1,5 @@
 import typer
+import os
 
 app = typer.Typer()
 
@@ -10,8 +11,11 @@ def model(question):
 def help():
     print("help")
 
+
 @app.command()
 def upload(json_path):
+    os.chdir("/Users/ankit-privado/Desktop/privado/hackathon/ollama")
+    os.system("ollama serve")
     print(f"uploading file to model: {json_path}")
 
 if __name__ == "__main__":
