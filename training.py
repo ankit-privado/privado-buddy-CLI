@@ -10,12 +10,10 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import RetrievalQA
 
-# Initialize argparse and define command-line arguments
 parser = argparse.ArgumentParser(description='Training Script')
 parser.add_argument('--json_path', type=str, help='Path to the JSON file')
 args = parser.parse_args()
 
-# Use the JSON file path as needed
 json_path = args.json_path
 
 class SuppressStdout:
@@ -46,8 +44,7 @@ while True:
         break
     if query.strip() == "":
         continue
-
-    # Prompt
+    
     template = """Use the following pieces of context to answer the question at the end. 
     If you don't know the answer, just say that you don't know, don't try to make up an answer. 
     Use three sentences maximum and keep the answer as concise as possible. 
